@@ -61,17 +61,19 @@ function draw(ctx, mousePos, entities, entity) {
 		x: 0,
 		y: 0,
 	}
+	const xOffsetMax = Math.min(400, window.innerWidth / 3)
+	const yOffsetMax = Math.min(200, window.innerHeight / 3)
 	function loop() {
 		requestAnimationFrame(() => {
-			if(entity.position.x + offsets.x < 400) {
-				offsets.x = 400 - entity.position.x
-			} else if(entity.position.x + offsets.x > ctx.canvas.width - 400) {
-				offsets.x = ctx.canvas.width - 400 - entity.position.x
+			if(entity.position.x + offsets.x < xOffsetMax) {
+				offsets.x = xOffsetMax - entity.position.x
+			} else if(entity.position.x + offsets.x > ctx.canvas.width - xOffsetMax) {
+				offsets.x = ctx.canvas.width - xOffsetMax - entity.position.x
 			}
-			if(entity.position.y + offsets.y < 200) {
-				offsets.y = 200 - entity.position.y
-			} else if(entity.position.y + offsets.y > ctx.canvas.height - 200) {
-				offsets.y = ctx.canvas.height - 200 - entity.position.y
+			if(entity.position.y + offsets.y < yOffsetMax) {
+				offsets.y = yOffsetMax - entity.position.y
+			} else if(entity.position.y + offsets.y > ctx.canvas.height - yOffsetMax) {
+				offsets.y = ctx.canvas.height - yOffsetMax - entity.position.y
 			}
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 			ctx.save()
