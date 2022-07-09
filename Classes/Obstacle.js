@@ -2,10 +2,11 @@ import Vector from "./Vector.js"
 
 export default class Obstacle {
 	/**
-	 * @param {string} d 
+	 * @param {SVGPathElement} path
 	 */
-	constructor(d) {
-		this.d = d
+	constructor(path) {
+		const d = path.getAttribute('d')
+		this.fill = path.getAttribute('fill')
 		this.path = new Path2D(d)
 	}
 
@@ -14,7 +15,7 @@ export default class Obstacle {
 	 */
 	draw(ctx) {
 		ctx.save()
-		ctx.fillStyle = '#414042'
+		ctx.fillStyle = this.fill
 		ctx.fill(this.path)
 		ctx.restore()
 	}

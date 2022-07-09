@@ -16,7 +16,9 @@ const ctx = canvas.getContext('2d')
 if(!ctx)
 	throw new Error('No context found')
 
-const paths = Array.from(document.querySelectorAll('svg path[d]'))
+const background = Array.from(document.querySelectorAll('svg #background path[d]'))
+const collisions = Array.from(document.querySelectorAll('svg #collisions path[d]'))
+const foreground = Array.from(document.querySelectorAll('svg #foreground path[d]'))
 
 /**
  * @param {CanvasRenderingContext2D} ctx
@@ -24,10 +26,12 @@ const paths = Array.from(document.querySelectorAll('svg path[d]'))
 void function (ctx) {
 	const entity = new Entity(ctx)
 	const mousePos = new Vector(entity.position.x, entity.position.y)
-	const obstacles = paths.map(path => new Obstacle(path.getAttribute('d')))
+	const obstacles = collisions.map(path => new Obstacle(path))
+	const staticBack = background.map(path => new Obstacle(path))
+	const staticFront = foreground.map(path => new Obstacle(path))
 	const controls = new Controls(ctx, entity)
 	update(ctx, mousePos, entity, obstacles)
-	draw(ctx, mousePos, [...obstacles, entity, controls], entity)
+	draw(ctx, mousePos, [...staticBack, ...obstacles, entity, ...staticFront, controls], entity)
 }(ctx)
 
 function update(ctx, mousePos, entity, obstacles) {
