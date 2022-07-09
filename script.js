@@ -59,9 +59,13 @@ function draw(ctx, mousePos, entities, entity) {
 		requestAnimationFrame(() => {
 			if(entity.position.x + offsets.x < 400) {
 				offsets.x = 400 - entity.position.x
-			}
-			else if(entity.position.x + offsets.x > ctx.canvas.width - 400) {
+			} else if(entity.position.x + offsets.x > ctx.canvas.width - 400) {
 				offsets.x = ctx.canvas.width - 400 - entity.position.x
+			}
+			if(entity.position.y + offsets.y < 200) {
+				offsets.y = 200 - entity.position.y
+			} else if(entity.position.y + offsets.y > ctx.canvas.height - 200) {
+				offsets.y = ctx.canvas.height - 200 - entity.position.y
 			}
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 			ctx.save()
