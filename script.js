@@ -31,7 +31,13 @@ void function (ctx) {
 	const staticFront = foreground.map(path => new Obstacle(path))
 	const controls = new Controls(ctx, entity)
 	update(ctx, mousePos, entity, obstacles)
-	draw(ctx, mousePos, [...staticBack, ...obstacles, entity, ...staticFront, controls], entity)
+	draw(ctx, mousePos, [
+		...staticBack,
+		// ...obstacles,
+		entity,
+		...staticFront,
+		controls
+	], entity)
 }(ctx)
 
 function update(ctx, mousePos, entity, obstacles) {
