@@ -70,9 +70,10 @@ export default class Ball {
 		}
 
 		this.position = this.position.add(this.offset)
+		const decrease = rays.length > 0 ? 0.999 : 0.99
 		this.speed = new Vector(
-			(this.position.x - x) * 0.99,
-			(this.position.y - y) * 0.99,
+			(this.position.x - x) * decrease,
+			(this.position.y - y) * decrease,
 		)
 	}
 
