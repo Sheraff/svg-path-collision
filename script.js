@@ -34,7 +34,7 @@ void function (ctx) {
 	update(ctx, mousePos, entity, obstacles, offsets)
 	draw(ctx, mousePos, [
 		...staticBack,
-		...obstacles,
+		// ...obstacles,
 		entity,
 		...staticFront,
 		controls

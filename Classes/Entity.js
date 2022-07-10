@@ -30,8 +30,8 @@ export default class Ball {
 			}
 		})
 		this.position = new Vector(
-			300,
-			300
+			500,
+			500
 		)
 		this.speed = new Vector(0, 0)
 	}
