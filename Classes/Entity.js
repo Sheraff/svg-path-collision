@@ -45,6 +45,8 @@ export default class Ball {
 	 */
 	update(ctx, mousePos, obstacles, dt, time){
 		// this.position = mousePos
+		const {x, y} = this.position
+		this.position = this.position.add(this.speed)
 
 		let [rays, minR] = this.findCollidingRays(this.rays, obstacles, ctx)
 		if (rays.length === this.rays.length) {
@@ -68,8 +70,7 @@ export default class Ball {
 		}
 
 		
-		const {x, y} = this.position
-		this.position = this.position.add(this.speed).add(this.offset)
+		this.position = this.position.add(this.offset)
 		this.speed = new Vector(
 			(this.position.x - x) * 0.99,
 			(this.position.y - y) * 0.99,
