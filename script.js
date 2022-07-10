@@ -2,6 +2,7 @@ import Entity from './Classes/Entity.js'
 import Vector from './Classes/Vector.js'
 import Obstacle from './Classes/Obstacle.js'
 import Controls from './Classes/Controls.js'
+import BitmapImage from './Classes/BitmapImage.js'
 
 const WORLD_TIME_SPEED = 1
 
@@ -16,27 +17,32 @@ const ctx = canvas.getContext('2d')
 if(!ctx)
 	throw new Error('No context found')
 
-const background = Array.from(document.querySelectorAll('svg #background path[d]'))
+// const background = Array.from(document.querySelectorAll('svg #background path[d]'))
 const collisions = Array.from(document.querySelectorAll('svg #collisions path[d]'))
-const foreground = Array.from(document.querySelectorAll('svg #foreground path[d]'))
+// const foreground = Array.from(document.querySelectorAll('svg #foreground path[d]'))
+
+const dirname = import.meta.url.split('/').slice(0, -1).join('/')
 
 /**
  * @param {CanvasRenderingContext2D} ctx
  */
-void function (ctx) {
+void async function (ctx) {
 	const entity = new Entity(ctx)
 	const mousePos = new Vector(entity.position.x, entity.position.y)
 	const obstacles = collisions.map(path => new Obstacle(path))
-	const staticBack = background.map(path => new Obstacle(path))
-	const staticFront = foreground.map(path => new Obstacle(path))
+	// const staticBack = background.map(path => new Obstacle(path))
+	// const staticFront = foreground.map(path => new Obstacle(path))
+	const image = new BitmapImage(`${dirname}/Assets/background.png`)
+	await image.load()
 	const controls = new Controls(ctx, entity)
 	const offsets = new Vector(0, 0)
 	update(ctx, mousePos, entity, obstacles, offsets)
 	draw(ctx, mousePos, [
-		...staticBack,
+		// ...staticBack,
 		// ...obstacles,
+		image,
 		entity,
-		...staticFront,
+		// ...staticFront,
 		controls
 	], entity, offsets)
 }(ctx)
