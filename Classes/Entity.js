@@ -69,7 +69,6 @@ export default class Ball {
 			this.offset = new Vector(0, 0)
 		}
 
-		
 		this.position = this.position.add(this.offset)
 		this.speed = new Vector(
 			(this.position.x - x) * 0.99,

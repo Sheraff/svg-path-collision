@@ -22,7 +22,7 @@ export default class Controls {
 		const speed = Math.hypot(this.impulse.x, this.impulse.y)
 		if(speed > 20) {
 			this.impulse = this.impulse.entrywise(new Vector(1 / speed, 1 / speed))
-			this.impulse = this.impulse.entrywise(new Vector(20, 20))
+			this.impulse = this.impulse.entrywise(new Vector(30, 30))
 		}
 	}
 
