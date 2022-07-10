@@ -4,7 +4,7 @@ import Vector from './Vector.js'
 
 export default class Ball {
 	static BUMPER_COUNT = 20 // 30 // resolution of angle of collision
-	static BUMPER_RESOLUTION = 15 // 40 // resolution of strength of collision
+	static BUMPER_RESOLUTION = 50 // 40 // resolution of strength of collision
 
 	/**
 	 * @param {CanvasRenderingContext2D} ctx
@@ -110,13 +110,17 @@ export default class Ball {
 		return [rays, minR]
 	}
 
+	lastDraw = new Vector(0, 0)
 	/**
 	 * @param {CanvasRenderingContext2D} ctx
 	 * @param {Vector} mousePos
 	 */
 	draw(ctx, mousePos){
+		if(this.position.dist(this.lastDraw) > 0.5) {
+			this.lastDraw = this.position
+		}
 		ball: {
-			const {x, y} = this.position
+			const {x, y} = this.lastDraw
 			const {r} = this
 			ctx.save()
 			ctx.fillStyle = '#ffffff'
@@ -125,19 +129,19 @@ export default class Ball {
 			ctx.fill()
 			ctx.restore()
 		}
-		rays: {
-			if(!this.offset)
-				break rays
-			const {x, y} = this.position
-			ctx.save()
-			ctx.strokeStyle = '#00f'
-			ctx.lineWidth = 1
-			ctx.beginPath()
-			ctx.moveTo(x, y)
-			ctx.lineTo(x + this.offset.x, y + this.offset.y)
-			ctx.stroke()
-			ctx.restore()
+		// rays: {
+		// 	if(!this.offset)
+		// 		break rays
+		// 	const {x, y} = this.position
+		// 	ctx.save()
+		// 	ctx.strokeStyle = '#00f'
+		// 	ctx.lineWidth = 1
+		// 	ctx.beginPath()
+		// 	ctx.moveTo(x, y)
+		// 	ctx.lineTo(x + this.offset.x, y + this.offset.y)
+		// 	ctx.stroke()
+		// 	ctx.restore()
 
-		}
+		// }
 	}
 }
