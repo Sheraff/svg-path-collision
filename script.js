@@ -30,41 +30,29 @@ void function (ctx) {
 	const staticBack = background.map(path => new Obstacle(path))
 	const staticFront = foreground.map(path => new Obstacle(path))
 	const controls = new Controls(ctx, entity)
-	update(ctx, mousePos, entity, obstacles)
+	const offsets = new Vector(0, 0)
+	update(ctx, mousePos, entity, obstacles, offsets)
 	draw(ctx, mousePos, [
 		...staticBack,
 		...obstacles,
 		entity,
 		...staticFront,
 		controls
-	], entity)
+	], entity, offsets)
 }(ctx)
 
-function update(ctx, mousePos, entity, obstacles) {
+function update(ctx, mousePos, entity, obstacles, offsets) {
 	window.addEventListener('pointermove', event => {
 		mousePos.x = event.clientX
 		mousePos.y = event.clientY
 	})
+	const xOffsetMax = Math.min(400, window.innerWidth / 3)
+	const yOffsetMax = Math.min(200, window.innerHeight / 3)
 	function loop(lastTime) {
 		requestAnimationFrame((time) => {
 			const modifiedTime = time * WORLD_TIME_SPEED
 			const delta = lastTime ? modifiedTime - lastTime : 0
-			entity.update(ctx, mousePos, obstacles, delta, modifiedTime)
-			loop(modifiedTime)
-		})
-	}
-	loop(0)
-}
-
-function draw(ctx, mousePos, entities, entity) {
-	const offsets = {
-		x: 0,
-		y: 0,
-	}
-	const xOffsetMax = Math.min(400, window.innerWidth / 3)
-	const yOffsetMax = Math.min(200, window.innerHeight / 3)
-	function loop() {
-		requestAnimationFrame(() => {
+			entity.update(ctx, mousePos, obstacles, delta, modifiedTime, offsets)
 			if(entity.position.x + offsets.x < xOffsetMax) {
 				offsets.x = xOffsetMax - entity.position.x
 			} else if(entity.position.x + offsets.x > ctx.canvas.width - xOffsetMax) {
@@ -75,6 +63,16 @@ function draw(ctx, mousePos, entities, entity) {
 			} else if(entity.position.y + offsets.y > ctx.canvas.height - yOffsetMax) {
 				offsets.y = ctx.canvas.height - yOffsetMax - entity.position.y
 			}
+			loop(modifiedTime)
+		})
+	}
+	loop(0)
+}
+
+function draw(ctx, mousePos, entities, entity, offsets) {
+	
+	function loop() {
+		requestAnimationFrame(() => {
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 			ctx.save()
 			ctx.translate(offsets.x, offsets.y)

@@ -17,26 +17,31 @@ export default class Obstacle {
 	 * @param {{x: number, y: number}} offsets
 	 */
 	draw(ctx, offsets) {
-		const {width, height} = ctx.canvas
-		const [x1, y1, x2, y2] = this.bounds
-		const minX = -offsets.x
-		const minY = -offsets.y
-		const maxX = minX + width
-		const maxY = minY + height
-		if (x2 < minX || x1 > maxX || y2 < minY || y1 > maxY) {
+		if(!this.isActive(ctx, offsets))
 			return
-		}
 		ctx.save()
 		ctx.fillStyle = this.fill
 		ctx.fill(this.path)
 		ctx.restore()
 	}
 
+	isActive(ctx, offsets) {
+		const {width, height} = ctx.canvas
+		const [x1, y1, x2, y2] = this.bounds
+		const minX = -offsets.x
+		const minY = -offsets.y
+		const maxX = minX + width
+		const maxY = minY + height
+		return x2 >= minX && x1 <= maxX && y2 >= minY && y1 <= maxY
+	}
+
 	/**
 	 * @param {CanvasRenderingContext2D} ctx 
 	 * @param {Vector} vec
 	 */
-	contains(ctx, vec) {
+	contains(ctx, vec, offsets) {
+		if(!this.isActive(ctx, offsets))
+			return false
 		return ctx.isPointInPath(this.path, vec.x, vec.y)
 	}
 }

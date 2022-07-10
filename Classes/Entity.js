@@ -3,8 +3,8 @@ import Obstacle from './Obstacle.js'
 import Vector from './Vector.js'
 
 export default class Ball {
-	static BUMPER_COUNT = 30
-	static BUMPER_RESOLUTION = 40
+	static BUMPER_COUNT = 20 // 30 // resolution of angle of collision
+	static BUMPER_RESOLUTION = 15 // 40 // resolution of strength of collision
 
 	/**
 	 * @param {CanvasRenderingContext2D} ctx
@@ -14,7 +14,7 @@ export default class Ball {
 		this.offset = new Vector(0, 0)
 		this.rays = Array(Ball.BUMPER_COUNT).fill(0).map((_, i) => {
 			const angle = i / Ball.BUMPER_COUNT * Math.PI * 2
-			const bumpers = Array(Ball.BUMPER_RESOLUTION).fill(0).map((_, j) => {
+			const bumpers = Array(Ball.BUMPER_RESOLUTION - 1).fill(0).map((_, j) => {
 				const r = this.r - j * this.r / Ball.BUMPER_RESOLUTION
 				return {
 					vec: new Vector(
@@ -42,22 +42,14 @@ export default class Ball {
 	 * @param {Obstacle[]} obstacles
 	 * @param {number} dt
 	 * @param {number} time
+	 * @param {Vector} offsets
 	 */
-	update(ctx, mousePos, obstacles, dt, time){
+	update(ctx, mousePos, obstacles, dt, time, offsets){
 		// this.position = mousePos
 		const {x, y} = this.position
 		this.position = this.position.add(this.speed)
 
-		let [rays, minR] = this.findCollidingRays(this.rays, obstacles, ctx)
-		if (rays.length === this.rays.length) {
-			rays = this.rays.filter(ray => {
-				const currentPos = ray.bumpers[0].vec.add(this.position)
-				return obstacles.some(obstacle => {
-					return obstacle.contains(ctx, currentPos)
-				})
-			})
-			minR = -this.r * 2 * Math.max(0, rays.length / this.rays.length - 0.5)
-		}
+		let [rays, minR] = this.findCollidingRays(this.rays, obstacles, ctx, offsets)
 		if (rays.length > 0) {
 			const angle = circularMedian(rays.map(ray => ray.angle))
 			const offset = new Vector(
@@ -77,17 +69,33 @@ export default class Ball {
 		)
 	}
 
-	findCollidingRays(allRays, obstacles, ctx) {
+	findCollidingRays(allRays, obstacles, ctx, offsets) {
+		// test center
+		const centerCollides = obstacles.some(obstacle => {
+			return obstacle.contains(ctx, this.position, offsets)
+		})
+		if(centerCollides) {
+			const rays = this.rays.filter(ray => {
+				const currentPos = ray.bumpers[0].vec.add(this.position)
+				return obstacles.some(obstacle => {
+					return obstacle.contains(ctx, currentPos, offsets)
+				})
+			})
+			const minR = -this.r * 2 * Math.max(0, rays.length / this.rays.length - 0.5)
+			return [rays, minR]
+		}
+
+		// test rays individually
 		let minR = Infinity
 		let rays = []
 		for (let i = 0; i < allRays.length; i++) {
-			bumpers: for (let j = allRays[i].bumpers.length - 1; j >= 0; j--) {
+			for (let j = 0; j < allRays[i].bumpers.length; j++) {
 				const bumper = allRays[i].bumpers[j]
 				if (bumper.r > minR)
 					continue
 				const currentPos = bumper.vec.add(this.position)
 				const bumps = obstacles.some(obstacle => {
-					return obstacle.contains(ctx, currentPos)
+					return obstacle.contains(ctx, currentPos, offsets)
 				})
 				if (!bumps)
 					continue
@@ -97,7 +105,6 @@ export default class Ball {
 				} else {
 					rays.push(allRays[i])
 				}
-				break bumpers
 			}
 		}
 		return [rays, minR]
