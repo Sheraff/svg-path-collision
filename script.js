@@ -78,7 +78,7 @@ function draw(ctx, mousePos, entities, entity) {
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 			ctx.save()
 			ctx.translate(offsets.x, offsets.y)
-			entities.forEach(entity => entity.draw(ctx))
+			entities.forEach(entity => entity.draw(ctx, offsets))
 			ctx.restore()
 			loop()
 		})
